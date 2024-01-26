@@ -1,0 +1,26 @@
+{% extends 'products/base.html' %}
+{% block content %}
+    <div class="pricing-header px-3 py-3 pt-md-5 pb-md-4 mx-auto text-center">
+        <h1 class="display-4">Рецепты без продукта</h1>
+    </div>
+
+    <div class="container">
+        <p>Продукт: {{ product.name }}, ID: {{ product.id }}</p>
+        <table class="table table-bordered">
+            <thead>
+            <tr>
+                <th scope="col">ID рецепта</th>
+                <th scope="col">Название рецепта</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for object in recipes %}
+                <tr>
+                    <td>{{ object.id }}</td>
+                    <td>{{ object.name }}</td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+{% endblock %}
