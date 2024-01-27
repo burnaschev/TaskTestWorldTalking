@@ -1,4 +1,5 @@
 from django.db import transaction
+from django.db.models import Q
 from django.http import JsonResponse
 from django.shortcuts import get_object_or_404
 from django.shortcuts import render
@@ -36,7 +37,10 @@ def cook_recipe(request, recipe_id):
 def show_recipes_without_product(request, product_id):
     product = get_object_or_404(Product, pk=product_id)
 
-    recipes = Recipe.objects.exclude(recipeingredient__product=product, recipeingredient__weight_in_grams__gte=10)
+    recipes = Recipe.objects.filter(
+        Q(recipeingredient__product=product, recipeingredient__weight_in_grams__lt=10) |
+        Q(recipeingredient__isnull=True)
+    ).distinct()
 
     context = {
         'recipes': recipes,
