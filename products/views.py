@@ -23,13 +23,18 @@ def add_product_to_recipe(request, recipe_id, product_id, weight):
 
 @transaction.atomic
 def cook_recipe(request, recipe_id):
-    recipe = get_object_or_404(Recipe, pk=recipe_id)
-    ingredients = recipe.recipeingredient_set.all()
+    recipe = Recipe.objects.select_for_update().get(pk=recipe_id)
+    ingredients = recipe.recipeingredients.select_for_update().all()
 
-    for ingredient in ingredients:
-        ingredient.product.times_used += 1
+    try:
+        for ingredient in ingredients:
+            ingredient.product.times_used += 1
 
-    Product.objects.bulk_update([ingredient.product for ingredient in ingredients], ['times_used'])
+        Product.objects.bulk_update([ingredient.product for ingredient in ingredients], ['times_used'])
+
+    except Exception as e:
+        transaction.set_rollback(True)
+        return JsonResponse({'status': 'error', 'message': str(e)})
 
     return JsonResponse({'status': 'success'})
 
