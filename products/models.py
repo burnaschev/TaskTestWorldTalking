@@ -26,7 +26,7 @@ class Recipe(models.Model):
 
 
 class RecipeIngredient(models.Model):
-    recipe = models.ForeignKey(Recipe, on_delete=models.CASCADE, verbose_name='рецепт')
+    recipe = models.ForeignKey(Recipe, on_delete=models.CASCADE, verbose_name='рецепт', related_name='recipeingredients')
     product = models.ForeignKey(Product, on_delete=models.CASCADE, verbose_name='продукт')
     weight_in_grams = models.IntegerField(verbose_name='вес гр')
 
